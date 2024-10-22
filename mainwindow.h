@@ -2,25 +2,29 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
-{
+#include <QDialog>
+#include "NewsWindow.h"
+class ServerConnectionDialog : public QDialog {
+    Q_OBJECT
+public:
+    explicit ServerConnectionDialog(QWidget *parent = nullptr);
+};
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
 
 private slots:
-    void on_pushButton_clicked();
+    void toggleNewsVisibility();
+    void showSettings();
+    void showHelp();
+    void openServerConnectionDialog();
+
 
 private:
-    Ui::MainWindow *ui;
+    NewsWindow *newsWindow;
+
 };
+
 #endif // MAINWINDOW_H
