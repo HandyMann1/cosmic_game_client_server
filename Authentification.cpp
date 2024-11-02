@@ -6,8 +6,7 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
     passwordLineEdit = new QLineEdit(this);
 
 
-    this->resize(400, 300);
-    formLayout->setSpacing(50);
+    this->setFixedSize(400, 300);
 
     passwordLineEdit->setEchoMode(QLineEdit::Password);
 
@@ -25,6 +24,7 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
 
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLoginAndPassword);
     connect(registrationButton, &QPushButton::clicked, this, &LoginWindow::chooseRegistration);
+    formLayout->setSpacing(75);
 }
 
 void LoginWindow::chooseRegistration() {
@@ -51,8 +51,7 @@ void LoginWindow::checkLoginAndPassword() {
 RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
     QFormLayout *formLayout = new QFormLayout(this);
 
-    this->resize(400, 300);
-    formLayout->setSpacing(50);
+    this->setFixedSize(400, 300);
 
     loginLineEdit = new QLineEdit(this);
     passwordLineEdit = new QLineEdit(this);
@@ -63,13 +62,14 @@ RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
     QPushButton *chooseLoginButton = new QPushButton("Перейти в режим: вход", this);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(chooseLoginButton);
     buttonLayout->addWidget(registrationButton);
+    buttonLayout->addWidget(chooseLoginButton);
 
     formLayout->addRow("&Логин:", loginLineEdit);
     formLayout->addRow("&Пароль:", passwordLineEdit);
     formLayout->addRow(buttonLayout);
 
+    formLayout->setSpacing(75);
 
     connect(registrationButton, &QPushButton::clicked, this, &RegistrationWindow::registration);
     connect(chooseLoginButton, &QPushButton::clicked, this, &RegistrationWindow::chooseLogin);
@@ -87,6 +87,7 @@ bool RegistrationWindow::checkPassword(const QString &password) {
 
 void RegistrationWindow::chooseLogin() {
     emit loginChosen();
+    close();
 }
 
 void RegistrationWindow::registration() {

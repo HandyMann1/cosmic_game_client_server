@@ -8,7 +8,6 @@
 #include <QMessageBox>
 #include <QStyle>
 
-
 //qstyle
 
 
