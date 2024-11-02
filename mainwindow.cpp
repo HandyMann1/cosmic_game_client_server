@@ -1,12 +1,4 @@
 #include "MainWindow.h"
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QLineEdit>
-#include <QWidget>
-#include <QDialog>
-#include <QFormLayout>
-#include <QLabel>
 
 ServerConnectionDialog::ServerConnectionDialog(QWidget *parent) : QDialog(parent){
 
@@ -27,6 +19,7 @@ ServerConnectionDialog::ServerConnectionDialog(QWidget *parent) : QDialog(parent
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
+    this->resize(1200, 800);
 
     QPushButton *showNewsButton = new QPushButton("Show News", this);
     newsWindow = new NewsWindow(this);

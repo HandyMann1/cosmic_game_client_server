@@ -3,7 +3,16 @@
 
 #include <QMainWindow>
 #include <QDialog>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QLineEdit>
+#include <QWidget>
+#include <QDialog>
+#include <QFormLayout>
+#include <QLabel>
 #include "NewsWindow.h"
+
 class ServerConnectionDialog : public QDialog {
     Q_OBJECT
 public:

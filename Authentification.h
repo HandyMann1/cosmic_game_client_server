@@ -3,6 +3,14 @@
 
 #include <QLineEdit>
 #include <QWidget>
+#include <QPushButton>
+#include <QFormLayout>
+#include <QMessageBox>
+#include <QStyle>
+
+
+//qstyle
+
 
 class LoginWindow : public QWidget {
     Q_OBJECT

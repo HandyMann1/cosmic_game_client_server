@@ -1,24 +1,27 @@
 #include "Authentification.h"
 
-#include <QPushButton>
-#include <QFormLayout>
-#include <QMessageBox>
-
 LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
     QFormLayout *formLayout = new QFormLayout(this);
-
     loginLineEdit = new QLineEdit(this);
     passwordLineEdit = new QLineEdit(this);
+
+
+    this->resize(400, 300);
+    formLayout->setSpacing(50);
 
     passwordLineEdit->setEchoMode(QLineEdit::Password);
 
     QPushButton *loginButton = new QPushButton("Войти", this);
     QPushButton *registrationButton = new QPushButton("Перейти в режим: Регистрация", this);
 
+
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(loginButton);
+    buttonLayout->addWidget(registrationButton);
+
     formLayout->addRow("&Логин:", loginLineEdit);
     formLayout->addRow("&Пароль:", passwordLineEdit);
-    formLayout->addWidget(loginButton);
-    formLayout->addWidget(registrationButton);
+    formLayout->addRow(buttonLayout);
 
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLoginAndPassword);
     connect(registrationButton, &QPushButton::clicked, this, &LoginWindow::chooseRegistration);
@@ -46,8 +49,10 @@ void LoginWindow::checkLoginAndPassword() {
 }
 
 RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
-    // Create layout and widgets
     QFormLayout *formLayout = new QFormLayout(this);
+
+    this->resize(400, 300);
+    formLayout->setSpacing(50);
 
     loginLineEdit = new QLineEdit(this);
     passwordLineEdit = new QLineEdit(this);
@@ -57,11 +62,14 @@ RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
     QPushButton *registrationButton = new QPushButton("Зарегистрироваться", this);
     QPushButton *chooseLoginButton = new QPushButton("Перейти в режим: вход", this);
 
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(chooseLoginButton);
+    buttonLayout->addWidget(registrationButton);
+
     formLayout->addRow("&Логин:", loginLineEdit);
     formLayout->addRow("&Пароль:", passwordLineEdit);
+    formLayout->addRow(buttonLayout);
 
-    formLayout->addWidget(registrationButton);
-    formLayout->addWidget(chooseLoginButton);
 
     connect(registrationButton, &QPushButton::clicked, this, &RegistrationWindow::registration);
     connect(chooseLoginButton, &QPushButton::clicked, this, &RegistrationWindow::chooseLogin);
