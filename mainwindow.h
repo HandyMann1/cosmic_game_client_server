@@ -13,7 +13,6 @@
 #include <QLabel>
 #include <QStackedLayout>
 #include <QComboBox>
-#include "NewsWindow.h"
 
 class ServerConnectionDialog : public QDialog {
     Q_OBJECT
@@ -27,9 +26,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
 private slots:
-    void showNews();
-    void showSettings();
-    void showHelp();
     void showServerConnectionDialog();
 
 

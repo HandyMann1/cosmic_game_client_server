@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(connectButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(2); });
     connect(settingsButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(3); });
     connect(helpButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(4); });
-    connect(exitButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(5); });
+    connect(exitButton, &QPushButton::clicked, this, &MainWindow::close);
 }
 
 void MainWindow::showServerConnectionDialog(){
