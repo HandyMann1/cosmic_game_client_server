@@ -7,6 +7,7 @@
 #include <QFormLayout>
 #include <QMessageBox>
 #include <QStyle>
+#include <QFont>
 
 //qstyle
 

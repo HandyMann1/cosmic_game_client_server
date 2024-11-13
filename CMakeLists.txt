@@ -23,8 +23,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(client_kmms
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        NewsWindow.h
-        NewsWindow.cpp
+
+
         Authentification.h
         Authentification.cpp
         mainwindow.cpp mainwindow.h

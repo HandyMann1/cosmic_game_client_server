@@ -1,30 +1,45 @@
 #include "Authentification.h"
+#include <QFontDialog>
 
 LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
+
+    QFont fonti("Cascadia Mono SemiBold", 12);
+    this->setFont(fonti);
+    this->setFixedSize(400, 300);
+
     QFormLayout *formLayout = new QFormLayout(this);
     loginLineEdit = new QLineEdit(this);
     passwordLineEdit = new QLineEdit(this);
 
-
-    this->setFixedSize(400, 300);
-
     passwordLineEdit->setEchoMode(QLineEdit::Password);
 
-    QPushButton *loginButton = new QPushButton("Войти", this);
-    QPushButton *registrationButton = new QPushButton("Перейти в режим: Регистрация", this);
-
+    QPushButton *loginButton = new QPushButton("Login", this);
+    QPushButton *registrationButton = new QPushButton("Switch to registration", this);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(loginButton);
     buttonLayout->addWidget(registrationButton);
 
-    formLayout->addRow("&Логин:", loginLineEdit);
-    formLayout->addRow("&Пароль:", passwordLineEdit);
+    formLayout->addRow("&Login:", loginLineEdit);
+    formLayout->addRow("&Password:", passwordLineEdit);
     formLayout->addRow(buttonLayout);
 
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLoginAndPassword);
     connect(registrationButton, &QPushButton::clicked, this, &LoginWindow::chooseRegistration);
     formLayout->setSpacing(75);
+
+    QPushButton button("Select Font", this);
+    QObject::connect(&button, &QPushButton::clicked, [&]() {
+        bool ok;
+        QFont selectedFont = QFontDialog::getFont(&ok);
+        if (ok) {
+            // Apply the selected font globally
+            this->setFont(selectedFont);
+            // Or apply it to specific widgets
+            // button.setFont(selectedFont);
+        }
+    });
+    formLayout->addWidget(&button);
 }
 
 void LoginWindow::chooseRegistration() {
@@ -49,6 +64,9 @@ void LoginWindow::checkLoginAndPassword() {
 }
 
 RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
+    QFont fonti("Cascadia Mono SemiBold", 12);
+    this->setFont(fonti);
+    this->setFixedSize(400, 300);
     QFormLayout *formLayout = new QFormLayout(this);
 
     this->setFixedSize(400, 300);
@@ -58,15 +76,15 @@ RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
 
     passwordLineEdit->setEchoMode(QLineEdit::Password);
 
-    QPushButton *registrationButton = new QPushButton("Зарегистрироваться", this);
-    QPushButton *chooseLoginButton = new QPushButton("Перейти в режим: вход", this);
+    QPushButton *registrationButton = new QPushButton("Register", this);
+    QPushButton *chooseLoginButton = new QPushButton("Switch to login mode", this);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(registrationButton);
     buttonLayout->addWidget(chooseLoginButton);
 
-    formLayout->addRow("&Логин:", loginLineEdit);
-    formLayout->addRow("&Пароль:", passwordLineEdit);
+    formLayout->addRow("&Login:", loginLineEdit);
+    formLayout->addRow("&Password:", passwordLineEdit);
     formLayout->addRow(buttonLayout);
 
     formLayout->setSpacing(75);

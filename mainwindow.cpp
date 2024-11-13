@@ -17,12 +17,14 @@ ServerConnectionDialog::ServerConnectionDialog(QWidget *parent) : QDialog(parent
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+    QFont fonti("Cascadia Mono SemiBold", 18);
+    this->setFont(fonti);
+
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
     this->resize(1200, 800);
 
     QPushButton *showNewsButton = new QPushButton("Show News", this);
-    newsWindow = new NewsWindow(this);
 
 
     QPushButton *playButton = new QPushButton("Play!", this);
@@ -31,42 +33,49 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     QPushButton *connectButton = new QPushButton("Connect to Server", this);
     QPushButton *settingsButton = new QPushButton("Settings", this);
 
-    QGridLayout *gridLayout = new QGridLayout(centralWidget);
+    QWidget *playWidget = new QWidget(this);
+    QWidget *newsWidget = new QWidget(this); //news screen logic here is a placeholder
+    QVBoxLayout *newsLayout = new QVBoxLayout();
+    QLabel *newsLabel = new QLabel("Latest News Updates:", this);
+    QLabel *newsContent = new QLabel("No new updates.", this);
+    QWidget *connectWidget = new QWidget(this);
+    QWidget *settingsWidget = new QWidget(this);
+    QWidget *helpWidget = new QWidget(this);
 
-    gridLayout->addWidget(showNewsButton, 0, 0);
-    gridLayout->addWidget(newsWindow, 1, 0);
-    gridLayout->addWidget(playButton, 2, 0);
+    QVBoxLayout *windowItself = new QVBoxLayout();
+    QHBoxLayout *upperMenu = new QHBoxLayout();
+    visibleScreen = new QStackedLayout();
 
-    gridLayout->addWidget(settingsButton, 0, 1);
-    gridLayout->addWidget(helpButton, 1, 1);
+    centralWidget->setLayout(windowItself);
+    windowItself->addLayout(upperMenu);
+    windowItself->addLayout(visibleScreen);
 
-    gridLayout->addWidget(exitButton, 0, 2);
-    gridLayout->addWidget(connectButton, 2, 1);
+    upperMenu->addWidget(playButton);
+    upperMenu->addWidget(showNewsButton);
+    upperMenu->addWidget(connectButton);
+    upperMenu->addWidget(settingsButton);
+    upperMenu->addWidget(helpButton);
+    upperMenu->addWidget(exitButton);
 
-    connect(showNewsButton, &QPushButton::clicked, this, &MainWindow::toggleNewsVisibility);
+    visibleScreen->addWidget(playWidget);
+    visibleScreen->addWidget(newsWidget);
+    visibleScreen->addWidget(connectWidget);
+    visibleScreen->addWidget(settingsWidget);
+    visibleScreen->addWidget(helpWidget);
 
-    connect(settingsButton, &QPushButton::clicked, this, &MainWindow::showSettings);
-    connect(helpButton, &QPushButton::clicked, this, &MainWindow::showHelp);
+    newsLayout->addWidget(newsLabel);
+    newsLayout->addWidget(newsContent);
+    newsWidget->setLayout(newsLayout);
 
-    connect(exitButton, &QPushButton::clicked, this, &MainWindow::close);
-
-    connect(connectButton, &QPushButton::clicked, this, &MainWindow::openServerConnectionDialog);
+    connect(playButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(0); });
+    connect(showNewsButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(1); });
+    connect(connectButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(2); });
+    connect(settingsButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(3); });
+    connect(helpButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(4); });
+    connect(exitButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(5); });
 }
 
-void MainWindow::toggleNewsVisibility() {
-    if (newsWindow->isVisible()) {
-        newsWindow->hide();
-    } else {
-        newsWindow->show();
-    }
-}
-void MainWindow::showSettings(){
-    //implement some settings
-}
-void MainWindow::showHelp(){
-    //implement some help or advices
-}
-void MainWindow::openServerConnectionDialog(){
+void MainWindow::showServerConnectionDialog(){
     ServerConnectionDialog dialog(this);
     dialog.exec();
 }

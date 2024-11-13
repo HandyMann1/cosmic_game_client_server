@@ -11,6 +11,8 @@
 #include <QDialog>
 #include <QFormLayout>
 #include <QLabel>
+#include <QStackedLayout>
+#include <QComboBox>
 #include "NewsWindow.h"
 
 class ServerConnectionDialog : public QDialog {
@@ -25,14 +27,15 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
 private slots:
-    void toggleNewsVisibility();
+    void showNews();
     void showSettings();
     void showHelp();
-    void openServerConnectionDialog();
+    void showServerConnectionDialog();
 
 
 private:
-    NewsWindow *newsWindow;
+    //NewsWindow *newsWindow;
+    QStackedLayout *visibleScreen;
 
 };
 
