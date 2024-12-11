@@ -79,5 +79,3 @@ void MainWindow::showServerConnectionDialog(){
     ServerConnectionDialog dialog(this);
     dialog.exec();
 }
-
-
