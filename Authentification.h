@@ -22,7 +22,7 @@ public slots:
     void chooseRegistration();
 
 signals:
-    void loginSuccessful();
+    void tryLogin(str username, str password);
     void registrationChosen();
 
 private:
@@ -40,7 +40,7 @@ public slots:
     void chooseLogin();
 
 signals:
-    void registrationSuccessful();
+    void tryRegistration(str username, str password);
     void loginChosen();
 
 private:

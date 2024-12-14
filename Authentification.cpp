@@ -51,6 +51,7 @@ void LoginWindow::checkLoginAndPassword() {
     QString username = loginLineEdit->text();
     QString password = passwordLineEdit->text();
 
+    emit tryLogin(username, password);
 
 
     // Replace these with actual data validation
@@ -59,11 +60,15 @@ void LoginWindow::checkLoginAndPassword() {
     const QString correctPassword = "test";
 
     if (username == correctUsername && password == correctPassword) {
-        emit loginSuccessful();
+        //emit main screen idk
+        return 0;
+    }
+/*    if (username == correctUsername && password == correctPassword) {
+        emit tryLogin(username, password);//it was auto-logging in
         close();
     } else {
         QMessageBox::warning(this, "LOGIN ERROR!", "Wrong login or password!");
-    }
+    }*/ //old logic
 }
 
 RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
@@ -117,7 +122,7 @@ void RegistrationWindow::registration() {
     QString password = passwordLineEdit->text();
 
     if (checkLogin(username) && checkPassword(password)) {
-        emit registrationSuccessful();
+        emit tryRegistration(username, password);
         close();
     }
 }

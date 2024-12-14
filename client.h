@@ -9,6 +9,9 @@ public:
     Client();
 public slots:
     void slotReadyRead();
-    void loginCheck(str login, str password);
-    void registrationAttempt(str login, str password);
+    void loginCheck(str username, str password);
+    void registrationAttempt(str username, str password);
+signals:
+    void loginSuccess();
+    void registrationSuccess();
 };

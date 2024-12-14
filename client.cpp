@@ -8,11 +8,14 @@ Client::client() {
     MainWindow mainWindow;
     RegistrationWindow registrationWindow;
     registrationWindow.resize(0, 0);
-
-    QObject::connect(&loginWindow,&LoginWindow::loginSuccessful, this, &Client::loginCheck());
+/*
+    QObject::connect(&loginWindow,&LoginWindow::loginSuccessful, this, &Client::loginCheck);
+*/
+    QObject::connect(this, Client::loginSuccess(), [&] {MainWindow.show()});
     QObject::connect(&loginWindow, &LoginWindow::registrationChosen, [&] {registrationWindow.show();});
+    QObject::connect(this, Client::registrationSuccess(), [&] {loginWindow.show();});//add msg about registr
     QObject::connect(&registrationWindow, &RegistrationWindow::loginChosen, [&] {loginWindow.show();});
-    QObject::connect(&registrationWindow, &RegistrationWindow::registrationSuccessful, this, &Client::registrationAttempt);
+
 
     //maybe do a function for the connection to server
     socket = new QTcpSocket(this);
@@ -26,19 +29,23 @@ Client::client() {
 
 }
 
-void Client::loginCheck(str login, str password){
-    //get 2 strings -> send to server
+void Client::loginCheck(QString username, QString password){
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_6_2);
+    out << username << password;
+    socket->write(data);
+    socket->flush();
+    //server answers -> emit success/failure
+}
+
+void Client::registrationAttempt(QString username, QString password){
+    //send to server 2 strings
 
     //server answers -> emit success/failure
 }
 
-void Client::registrationAttempt(str login, str password){
-    //get 2 strings -> send to server
-
-    //server answers -> emit success/failure
-}
-
-void Client::SendToServer(QString str)
+void Client::SendToServer(QString str)//func that sets up the type of info
 {
     Data.clear();
     QDataStream out(&Data, QIODevice::WriteOnly);
@@ -55,6 +62,17 @@ void Client::slotReadyRead()
     if (in.status() == QDataStream::Ok) {
         QString str;
         in >> str;
-        ui->textBrowser->append(str);
+        if(str == "login succesful"){
+            emit loginSuccess();
+        }
+        else if(str == "login error"){
+            //emit sadness
+        }
+        else if(str == "registration succesful"){
+            emit registrationSuccess();
+        }
+        else if(str == "registration error"){
+            //emit sadness 2
+        }//other cases...
     }
 }
