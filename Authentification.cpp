@@ -24,8 +24,8 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
     formLayout->addRow("&Password:", passwordLineEdit);
     formLayout->addRow(buttonLayout);
 
-    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLoginAndPassword);
-    connect(registrationButton, &QPushButton::clicked, this, &LoginWindow::chooseRegistration);
+    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLoginAndPassword);//replacing this into client.cpp
+    connect(registrationButton, &QPushButton::clicked, this, &LoginWindow::chooseRegistration);//and this
     formLayout->setSpacing(75);
 
     QPushButton button("Select Font", this);
@@ -51,7 +51,10 @@ void LoginWindow::checkLoginAndPassword() {
     QString username = loginLineEdit->text();
     QString password = passwordLineEdit->text();
 
+
+
     // Replace these with actual data validation
+    //     14.12: this should be in client.cpp, not here
     const QString correctUsername = "test";
     const QString correctPassword = "test";
 
@@ -101,6 +104,7 @@ bool RegistrationWindow::checkLogin(const QString &username) {
 bool RegistrationWindow::checkPassword(const QString &password) {
     // Implement actual logic for password correctness
     return true;
+
 }
 
 void RegistrationWindow::chooseLogin() {
