@@ -1,32 +1,34 @@
 #include "client.h"
+#include <QDebug>
+/*
+ * in main
 #include "MainWindow.h"
 #include "Authentification.h"
+*/
 
-Client::client() {
+Client::Client() {
+//write destructor
+    //LoginWindow *loginWindow = new LoginWindow;     // password: test login: test
+    //MainWindow *mainWindow = new MainWindow;                                          //in main to avoid seg fault
+    //RegistrationWindow *registrationWindow = new RegistrationWindow;
 
-    LoginWindow loginWindow; // password: test login: test
-    MainWindow mainWindow;
-    RegistrationWindow registrationWindow;
-    registrationWindow.resize(0, 0);
-/*
+    /*
     QObject::connect(&loginWindow,&LoginWindow::loginSuccessful, this, &Client::loginCheck);
 */
-    QObject::connect(this, Client::loginSuccess(), [&] {MainWindow.show()});
-    QObject::connect(&loginWindow, &LoginWindow::registrationChosen, [&] {registrationWindow.show();});
-    QObject::connect(this, Client::registrationSuccess(), [&] {loginWindow.show();});//add msg about registr
-    QObject::connect(&registrationWindow, &RegistrationWindow::loginChosen, [&] {loginWindow.show();});
-
+    /* in main
+    QObject::connect(this, Client::loginSuccess, [&] {mainWindow->show();});
+    QObject::connect(loginWindow, &LoginWindow::registrationChosen, [&] {registrationWindow->show();});
+    QObject::connect(this, Client::registrationSuccess, [&] {loginWindow->show();});//add msg about registr
+    QObject::connect(registrationWindow, &RegistrationWindow::loginChosen, [&] {loginWindow->show();});
+*/
 
     //maybe do a function for the connection to server
-    socket = new QTcpSocket(this);
+    socket = new QTcpSocket;
 
-    connect(socket, &QTcpSocket::readyRead, client, Client::slotReadyRead);
-    connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
+    QObject::connect(socket, &QTcpSocket::readyRead, this, &Client::slotReadyRead);
+    QObject::connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
     //add the code to check if the connection actually established
     socket->connectToHost("127.0.0.1", 2323);
-
-    loginWindow.show();
-
 }
 
 void Client::loginCheck(QString username, QString password){
@@ -52,7 +54,6 @@ void Client::SendToServer(QString str)//func that sets up the type of info
     out.setVersion(QDataStream::Qt_6_2);
     out << str;
     socket->write(Data);
-    ui->lineEdit->clear();
 }
 
 void Client::slotReadyRead()

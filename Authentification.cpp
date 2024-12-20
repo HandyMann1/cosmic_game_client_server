@@ -24,8 +24,8 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
     formLayout->addRow("&Password:", passwordLineEdit);
     formLayout->addRow(buttonLayout);
 
-    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLoginAndPassword);//replacing this into client.cpp
-    connect(registrationButton, &QPushButton::clicked, this, &LoginWindow::chooseRegistration);//and this
+    connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLoginAndPassword);
+    connect(registrationButton, &QPushButton::clicked, this, &LoginWindow::chooseRegistration);
     formLayout->setSpacing(75);
 
     QPushButton button("Select Font", this);
@@ -43,6 +43,7 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
 }
 
 void LoginWindow::chooseRegistration() {
+    qDebug()<<"sent";
     emit registrationChosen();
     close();
 }
@@ -59,10 +60,9 @@ void LoginWindow::checkLoginAndPassword() {
     const QString correctUsername = "test";
     const QString correctPassword = "test";
 
-    if (username == correctUsername && password == correctPassword) {
+    /*if (username == correctUsername && password == correctPassword) {
         //emit main screen idk
-        return 0;
-    }
+    }*/
 /*    if (username == correctUsername && password == correctPassword) {
         emit tryLogin(username, password);//it was auto-logging in
         close();

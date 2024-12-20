@@ -22,7 +22,7 @@ public slots:
     void chooseRegistration();
 
 signals:
-    void tryLogin(str username, str password);
+    void tryLogin(QString username, QString password);
     void registrationChosen();
 
 private:
@@ -40,7 +40,7 @@ public slots:
     void chooseLogin();
 
 signals:
-    void tryRegistration(str username, str password);
+    void tryRegistration(QString username, QString  password);
     void loginChosen();
 
 private:
