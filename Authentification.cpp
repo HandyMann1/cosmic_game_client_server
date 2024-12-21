@@ -1,5 +1,9 @@
 #include "Authentification.h"
 #include <QFontDialog>
+#include <QNetworkAccessManager>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QNetworkReply>
 
 LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
 
@@ -33,10 +37,8 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
         bool ok;
         QFont selectedFont = QFontDialog::getFont(&ok);
         if (ok) {
-            // Apply the selected font globally
             this->setFont(selectedFont);
-            // Or apply it to specific widgets
-            // button.setFont(selectedFont);
+
         }
     });
     formLayout->addWidget(&button);
@@ -51,17 +53,53 @@ void LoginWindow::checkLoginAndPassword() {
     QString username = loginLineEdit->text();
     QString password = passwordLineEdit->text();
 
-    // Replace these with actual data validation
-    const QString correctUsername = "test";
-    const QString correctPassword = "test";
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 
-    if (username == correctUsername && password == correctPassword) {
-        emit loginSuccessful();
-        close();
-    } else {
-        QMessageBox::warning(this, "LOGIN ERROR!", "Wrong login or password!");
-    }
+    // Create JSON object for sending credentials
+    QJsonObject json;
+    json["action"] = "login";  // Specify action
+    json["username"] = username;
+    json["password"] = password;
+
+    QJsonDocument doc(json);
+
+    // Send POST request to the server for login
+    QNetworkRequest request(QUrl("http://localhost:2323/login")); // Adjust URL as needed
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    manager->post(request, doc.toJson());
+
+    connect(manager, &QNetworkAccessManager::finished, this, [=](QNetworkReply *reply) {
+        QString response = reply->readAll();
+        qDebug() << "Login Response:" << response;
+        if (reply->error() == QNetworkReply::NoError) {
+
+            QJsonDocument responseDoc = QJsonDocument::fromJson(response.toUtf8());
+            if (!responseDoc.isNull() && responseDoc.isObject()) {
+                QJsonObject responseObj = responseDoc.object();
+                QString status = responseObj["status"].toString();
+
+                if (status == "LOGIN_SUCCESS") {
+                    emit loginSuccessful();
+                    close();
+                } else if (status == "LOGIN_FAILURE") {
+                    QMessageBox::warning(this, "LOGIN ERROR!", "Incorrect login or password!");
+                } else {
+                    QMessageBox::warning(this, "LOGIN ERROR!", "An unknown error occurred.");
+                }
+            } else {
+                QMessageBox::warning(this, "LOGIN ERROR!", "Invalid response format from server.");
+            }
+        } else {
+            QMessageBox::warning(this, "LOGIN ERROR!", reply->errorString());
+        }
+
+        reply->deleteLater();
+        manager->deleteLater();
+    });
 }
+
+
 
 RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
     QFont fonti("Cascadia Mono SemiBold", 12);
@@ -94,13 +132,12 @@ RegistrationWindow::RegistrationWindow(QWidget *parent) : QWidget(parent) {
 }
 
 bool RegistrationWindow::checkLogin(const QString &username) {
-    // Implement actual logic forlogin correctness
-    return true;
+     return !username.isEmpty();
 }
 
 bool RegistrationWindow::checkPassword(const QString &password) {
-    // Implement actual logic for password correctness
-    return true;
+    return password.length() >= 6;
+
 }
 
 void RegistrationWindow::chooseLogin() {
@@ -112,8 +149,63 @@ void RegistrationWindow::registration() {
     QString username = loginLineEdit->text();
     QString password = passwordLineEdit->text();
 
-    if (checkLogin(username) && checkPassword(password)) {
-        emit registrationSuccessful();
-        close();
+    // Validate username and password
+    if (!checkLogin(username)) {
+        QMessageBox::warning(this, "REGISTRATION ERROR!", "Username cannot be empty!");
+        return;
     }
+
+    if (!checkPassword(password)) {
+        QMessageBox::warning(this, "REGISTRATION ERROR!", "Password must be at least 6 characters long!");
+        return;
+    }
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+    // Create JSON object for sending credentials
+    QJsonObject json;
+    json["action"] = "register";
+    json["username"] = username;
+    json["password"] = password;
+
+    QJsonDocument doc(json);
+
+     qDebug() << "Sending JSON Data:" << doc.toJson();
+
+    // Send POST request to the server for registration
+    QNetworkRequest request(QUrl("http://localhost:2323/register"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    manager->post(request,doc.toJson());
+
+    QString response = reply->readAll();
+    qDebug() << "Registration Response:" << response;
+    connect(manager, &QNetworkAccessManager::finished, this, [=](QNetworkReply *reply) {
+        if (reply->error() == QNetworkReply::NoError) {
+
+            // Parse the JSON response to check for status
+            QJsonDocument responseDoc = QJsonDocument::fromJson(response.toUtf8());
+            if (!responseDoc.isNull() && responseDoc.isObject()) {
+                QJsonObject responseObj = responseDoc.object();
+                QString status = responseObj["status"].toString();
+
+                if (status == "REGISTER_SUCCESS") {
+                    emit registrationSuccessful();  // Emit signal for successful registration
+                    close();  // Close the registration window
+                } else if (status == "REGISTER_FAILURE") {
+                    QMessageBox::warning(this, "REGISTRATION ERROR!", "Username already exists!");
+                } else {
+                    QMessageBox::warning(this, "REGISTRATION ERROR!", "An unknown error occurred.");
+                }
+            } else {
+                QMessageBox::warning(this, "REGISTRATION ERROR!", "Invalid response format from server.");
+            }
+        } else {
+            // Handle network errors
+            QMessageBox::warning(this, "REGISTRATION ERROR!", reply->errorString());
+        }
+
+        reply->deleteLater();  // Clean up reply object
+        manager->deleteLater();  // Clean up network manager object
+    });
 }
