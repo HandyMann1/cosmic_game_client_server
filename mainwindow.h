@@ -13,12 +13,18 @@
 #include <QLabel>
 #include <QStackedLayout>
 #include <QComboBox>
+#include <QNetworkAccessManager>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QNetworkReply>
+#include <QMessageBox>
 
 class ServerConnectionDialog : public QDialog {
     Q_OBJECT
 public:
     explicit ServerConnectionDialog(QWidget *parent = nullptr);
 };
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -28,10 +34,10 @@ public:
 private slots:
     void showServerConnectionDialog();
 
-
 private:
-    //NewsWindow *newsWindow;
+    void updateNews();
     QStackedLayout *visibleScreen;
+    QLabel *newsContent;
 
 };
 

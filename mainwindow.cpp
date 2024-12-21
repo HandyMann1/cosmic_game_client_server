@@ -25,8 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     this->resize(1200, 800);
 
     QPushButton *showNewsButton = new QPushButton("Show News", this);
-
-
+    QPushButton *newsUpdateButton = new QPushButton("Update news", this);
     QPushButton *playButton = new QPushButton("Play!", this);
     QPushButton *helpButton = new QPushButton("Help", this);
     QPushButton *exitButton = new QPushButton("Exit", this);
@@ -37,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     QWidget *newsWidget = new QWidget(this); //news screen logic here is a placeholder
     QVBoxLayout *newsLayout = new QVBoxLayout();
     QLabel *newsLabel = new QLabel("Latest News Updates:", this);
-    QLabel *newsContent = new QLabel("No new updates.", this);
+    newsContent = new QLabel("No new updates.", this);
     QWidget *connectWidget = new QWidget(this);
     QWidget *settingsWidget = new QWidget(this);
     QWidget *helpWidget = new QWidget(this);
@@ -65,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     newsLayout->addWidget(newsLabel);
     newsLayout->addWidget(newsContent);
+    newsLayout->addWidget(newsUpdateButton);
     newsWidget->setLayout(newsLayout);
 
     connect(playButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(0); });
@@ -73,6 +73,42 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(settingsButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(3); });
     connect(helpButton, &QPushButton::clicked, [this]() { visibleScreen->setCurrentIndex(4); });
     connect(exitButton, &QPushButton::clicked, this, &MainWindow::close);
+
+    connect(newsUpdateButton, &QPushButton::clicked, this, &MainWindow::updateNews);
+}
+
+void MainWindow::updateNews(){
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+    QJsonObject json;
+    json["action"] = "news";
+
+    QJsonDocument doc(json);
+    QNetworkRequest request(QUrl("http://localhost:2323/login")); // Adjust URL
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    manager->post(request, doc.toJson());
+
+    connect(manager, &QNetworkAccessManager::finished, this, [=](QNetworkReply *reply) {
+        QString response = reply->readAll();
+        qDebug() << "News Response:" << response;
+        if (reply->error() == QNetworkReply::NoError) {
+            QJsonDocument responseDoc = QJsonDocument::fromJson(response.toUtf8());
+            if (!responseDoc.isNull() && responseDoc.isObject()) {
+                QJsonObject responseObj = responseDoc.object();
+                QString status = responseObj["status"].toString();
+                if (status == "NEWS_SUCCESS") {
+                    //actual news
+                    this->newsContent->setText(responseObj["news"].toString());
+                }
+            }
+        } else {
+            QMessageBox::warning(this, "NEWS ERROR!", reply->errorString());
+        }
+    reply->deleteLater();
+    manager->deleteLater();
+    });
 }
 
 void MainWindow::showServerConnectionDialog(){

@@ -1,9 +1,5 @@
 #include "Authentification.h"
 #include <QFontDialog>
-#include <QNetworkAccessManager>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QNetworkReply>
 
 LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
 

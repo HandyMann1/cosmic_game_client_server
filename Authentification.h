@@ -6,6 +6,10 @@
 #include <QPushButton>
 #include <QFormLayout>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QNetworkReply>
 #include <QStyle>
 #include <QFont>
 
