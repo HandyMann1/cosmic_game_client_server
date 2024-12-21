@@ -55,9 +55,8 @@ void LoginWindow::checkLoginAndPassword() {
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 
-    // Create JSON object for sending credentials
     QJsonObject json;
-    json["action"] = "login";  // Specify action
+    json["action"] = "login";
     json["username"] = username;
     json["password"] = password;
 
@@ -149,7 +148,6 @@ void RegistrationWindow::registration() {
     QString username = loginLineEdit->text();
     QString password = passwordLineEdit->text();
 
-    // Validate username and password
     if (!checkLogin(username)) {
         QMessageBox::warning(this, "REGISTRATION ERROR!", "Username cannot be empty!");
         return;
@@ -162,7 +160,6 @@ void RegistrationWindow::registration() {
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 
-    // Create JSON object for sending credentials
     QJsonObject json;
     json["action"] = "register";
     json["username"] = username;
@@ -178,9 +175,9 @@ void RegistrationWindow::registration() {
 
     manager->post(request,doc.toJson());
 
-    QString response = reply->readAll();
-    qDebug() << "Registration Response:" << response;
     connect(manager, &QNetworkAccessManager::finished, this, [=](QNetworkReply *reply) {
+        QString response = reply->readAll();
+        qDebug() << "Registration Response:" << response;
         if (reply->error() == QNetworkReply::NoError) {
 
             // Parse the JSON response to check for status
@@ -190,8 +187,8 @@ void RegistrationWindow::registration() {
                 QString status = responseObj["status"].toString();
 
                 if (status == "REGISTER_SUCCESS") {
-                    emit registrationSuccessful();  // Emit signal for successful registration
-                    close();  // Close the registration window
+                    emit registrationSuccessful();
+                    close();
                 } else if (status == "REGISTER_FAILURE") {
                     QMessageBox::warning(this, "REGISTRATION ERROR!", "Username already exists!");
                 } else {
@@ -205,7 +202,7 @@ void RegistrationWindow::registration() {
             QMessageBox::warning(this, "REGISTRATION ERROR!", reply->errorString());
         }
 
-        reply->deleteLater();  // Clean up reply object
-        manager->deleteLater();  // Clean up network manager object
+        reply->deleteLater();
+        manager->deleteLater();
     });
 }
